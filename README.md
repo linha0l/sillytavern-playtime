@@ -92,7 +92,7 @@ node plugins.js install https://github.com/linha0l/sillytavern-playtime.git
 git -C plugins/sillytavern-playtime pull --ff-only
 ```
 
-然后通过平时的方式停止并重新启动酒馆，再刷新页面。仅更新文件或刷新浏览器，仍会运行旧后端。
+然后停止并重新启动酒馆，再刷新页面。
 
 Termux 中同样操作，例如默认安装路径：
 
@@ -113,7 +113,7 @@ git -C plugins/sillytavern-playtime pull --ff-only
 
 ## 兼容性与开发
 
-已验证 ST1.14.0～1.19.0、Windows Chrome／Firefox、实体Android Chrome与Termux Node。详细版本和测试边界见[兼容性记录](docs/compatibility.md)。Safari／iOS及普通Termux终端长期保活尚未验证。
+已验证 ST1.14.0～1.19.0、Windows Chrome／Firefox、Android Chrome与Termux Node。详细版本和测试边界见[兼容性记录](docs/compatibility.md)。Safari未验证。
 
 运行测试：
 
