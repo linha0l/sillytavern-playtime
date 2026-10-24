@@ -54,10 +54,6 @@ node plugins.js install https://github.com/linha0l/sillytavern-playtime.git
 
 尚未安装酒馆或缺少 Git／Node 时，先按照[酒馆官方 Termux 安装说明](https://docs.sillytavern.app/installation/android-%28termux%29/)准备环境。
 
-### 从手动安装版迁移
-
-旧手动版本可能位于前端 `third-party/tavern-playtime/` 和后端 `plugins/tavern-playtime/`。先导出时长数据，停止酒馆，把旧的两份**程序目录**备份并移出加载位置，再按上面的方式安装。不要同时启用两套本插件，以免重复写入统计文件；用户目录下的 `.tavern-playtime/` 统计数据保留原位。
-
 ## 计时规则
 
 - 同一酒馆账号的窗口共用队列，不同设备、浏览器或访问地址也按后端登记顺序排队；其他窗口显示等待。
