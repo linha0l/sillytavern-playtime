@@ -12,6 +12,14 @@ SillyTavern 的角色与聊天时长统计扩展，包含前端扩展和服务�
 
 统计文件包含角色名、聊天名和使用时间，分享导出文件前请确认其中的信息适合公开。
 
+## 面板预览
+
+截图中的编号名称和时长均为独立构造的合成数据。点击图片可查看大图。
+
+| 酒馆总览 | 角色统计 | 总览点击数据标签 |
+| --- | --- | --- |
+| [![酒馆总览](docs/images/overview.png)](docs/images/overview.png) | [![角色统计](docs/images/role.png)](docs/images/role.png) | [![总览点击柱块后显示时长和占比](docs/images/overview-selection.png)](docs/images/overview-selection.png) |
+
 ## 安装
 
 需要 SillyTavern **1.14.0 或更新版本**、Git，以及满足酒馆自身要求的 Node.js。插件本身支持 Node18+；例如 ST1.19.0 要求 Node20+。前后端均需安装。
