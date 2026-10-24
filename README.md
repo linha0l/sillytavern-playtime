@@ -14,9 +14,7 @@ SillyTavern 的角色与聊天时长统计扩展，包含前端扩展和服务�
 
 ## 面板预览
 
-截图中的编号名称和时长均为独立构造的合成数据。点击图片可查看大图。
-
-| 酒馆总览 | 角色统计 | 总览点击数据标签 |
+| 酒馆总览 | 角色统计 | 数据标签 |
 | --- | --- | --- |
 | [![酒馆总览](docs/images/overview.png)](docs/images/overview.png) | [![角色统计](docs/images/role.png)](docs/images/role.png) | [![总览点击柱块后显示时长和占比](docs/images/overview-selection.png)](docs/images/overview-selection.png) |
 
