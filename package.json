@@ -5,7 +5,7 @@
   "type": "module",
   "main": "server/index.mjs",
   "description": "SillyTavern角色与聊天时长统计",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/linha0l/sillytavern-playtime.git"

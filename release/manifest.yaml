@@ -4,7 +4,7 @@ display_name: 酒馆时长
 version: 0.1.13
 date: '2026-10-24'
 repository: https://github.com/linha0l/sillytavern-playtime
-license: UNLICENSED
+license: MIT
 frontend_manifest: manifest.json
 backend_entry: server/index.mjs
 minimum_sillytavern: 1.14.0
