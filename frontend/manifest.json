@@ -1,0 +1,13 @@
+{
+  "display_name": "酒馆时长",
+  "loading_order": 100,
+  "requires": [],
+  "optional": [],
+  "js": "index.js",
+  "css": "style.css",
+  "author": "local",
+  "version": "0.1.12",
+  "minimum_client_version": "1.14.0",
+  "homePage": "",
+  "hooks": { "disable": "onDisable", "delete": "onDelete", "enable": "onEnable" }
+}

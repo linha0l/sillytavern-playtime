@@ -1,0 +1,19 @@
+{
+  "name": "sillytavern-playtime",
+  "version": "0.1.12",
+  "private": true,
+  "type": "module",
+  "main": "server/index.mjs",
+  "description": "SillyTavern角色与聊天时长统计",
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/linha0l/sillytavern-playtime.git"
+  },
+  "scripts": {
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

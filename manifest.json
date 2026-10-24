@@ -1,0 +1,17 @@
+{
+  "display_name": "酒馆时长",
+  "loading_order": 100,
+  "requires": [],
+  "optional": [],
+  "js": "frontend/index.js",
+  "css": "frontend/style.css",
+  "author": "linha0l",
+  "version": "0.1.12",
+  "minimum_client_version": "1.14.0",
+  "homePage": "https://github.com/linha0l/sillytavern-playtime",
+  "hooks": {
+    "disable": "onDisable",
+    "delete": "onDelete",
+    "enable": "onEnable"
+  }
+}
