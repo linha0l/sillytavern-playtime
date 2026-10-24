@@ -98,7 +98,7 @@ async function start() {
     if (stopped) return;
     // Capture the minimum identity fields now; never serialize chat messages or settings.
     const target = readContext(getContext());
-    return enqueue(async () => { const status = await request('/heartbeat', { windowId: id, context: target, focused, legacyChatRename: !context.eventTypes.CHAT_RENAMED }); view.setStatus(status); if (view.isOpen()) await refresh(); });
+    return enqueue(async () => { const status = await request('/heartbeat', { windowId: id, context: target, focused, legacyChatRename: !context.eventTypes.CHAT_RENAMED }); view.setStatus(status); view.setBackendVersion(status.backendVersion); if (view.isOpen()) await refresh(); });
   }
   function listen(event, callback) {
     if (!event) return;

@@ -6,7 +6,7 @@
   "js": "frontend/index.js",
   "css": "frontend/style.css",
   "author": "linha0l",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "minimum_client_version": "1.14.0",
   "homePage": "https://github.com/linha0l/sillytavern-playtime",
   "hooks": {

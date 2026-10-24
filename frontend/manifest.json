@@ -6,7 +6,7 @@
   "js": "index.js",
   "css": "style.css",
   "author": "local",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "minimum_client_version": "1.14.0",
   "homePage": "",
   "hooks": { "disable": "onDisable", "delete": "onDelete", "enable": "onEnable" }

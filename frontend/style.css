@@ -40,12 +40,12 @@
     #tavern-playtime-view .tt-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
     #tavern-playtime-view .tt-data-menu { position: relative; }
     #tavern-playtime-view .tt-quiet { padding: 7px 10px; border: 1px solid var(--tt-line); border-radius: 8px; background: var(--tt-panel); }
-    #tavern-playtime-view .tt-settings { display: grid; place-items: center; width: 35px; height: 35px; padding: 0; color: var(--tt-muted); }
+    #tavern-playtime-view .tt-settings { display: grid; place-items: center; width: 35px; height: 35px; padding: 0; color: var(--tt-muted); position: relative; }
     #tavern-playtime-view .tt-settings i, #tavern-playtime-view .tt-settings svg { width: 18px; height: 18px; }
     #tavern-playtime-view .tt-settings i { display: none; }
     #tavern-playtime-view .tt-gear-fallback { font-size: 21px; line-height: 1; }
     #tavern-playtime-view .tt-settings:has(svg) .tt-gear-fallback { display: none; }
-    #tavern-playtime-view .tt-menu { position: absolute; right: 0; top: calc(100% + 8px); z-index: 12; padding: 6px; min-width: 156px; background: var(--tt-panel); border: 1px solid var(--tt-line); border-radius: 10px; box-shadow: 0 8px 24px #00000018; }
+    #tavern-playtime-view .tt-menu { position: absolute; right: 0; top: calc(100% + 8px); z-index: 12; padding: 6px; width: min(252px, calc(100vw - 92px)); max-height: min(70vh, 440px); overflow-y: auto; background: var(--tt-panel); border: 1px solid var(--tt-line); border-radius: 10px; box-shadow: 0 8px 24px #00000018; }
     #tavern-playtime-view .tt-menu button { display: block; width: 100%; text-align: left; border: 0; background: transparent; border-radius: 6px; padding: 9px 12px; }
     #tavern-playtime-view .tt-menu button:hover { background: var(--tt-hover); }
     #tavern-playtime-view .tt-theme-options { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding-bottom: 6px; margin-bottom: 6px; border-bottom: 1px solid var(--tt-line); }
@@ -191,4 +191,24 @@
 #tavern-playtime-view .tt-switch-track::after { content: ''; display: block; width: 12px; height: 12px; margin: 3px; border-radius: 50%; background: var(--tt-panel); transition: transform .15s; }
 #tavern-playtime-view .tt-exclude-other[aria-checked="true"] .tt-switch-track { background: var(--tt-curve); }
 #tavern-playtime-view .tt-exclude-other[aria-checked="true"] .tt-switch-track::after { transform: translateX(12px); }
+#tavern-playtime-view .tt-update-dot { position: absolute; top: 3px; right: 3px; width: 7px; height: 7px; border-radius: 50%; background: #d75e66; }
+#tavern-playtime-view .tt-update-label { display: block; margin-top: 2px; color: var(--tt-muted); font-size: 11px; }
+#tavern-playtime-view .tt-update-pref-row { display: flex; align-items: center; gap: 2px; }
+#tavern-playtime-view .tt-menu .tt-update-toggle { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex: 1; min-width: 0; font-size: 12px; white-space: nowrap; }
+#tavern-playtime-view .tt-update-toggle .tt-switch-track { flex: none; }
+#tavern-playtime-view .tt-update-toggle[aria-checked="true"] .tt-switch-track { background: var(--tt-curve); }
+#tavern-playtime-view .tt-update-toggle[aria-checked="true"] .tt-switch-track::after { transform: translateX(12px); }
+#tavern-playtime-view .tt-menu .tt-update-help-button { flex: none; width: 34px; padding: 9px 0; text-align: center; color: var(--tt-muted); }
+#tavern-playtime-view .tt-update-risk { padding: 6px 12px 10px; font-size: 12px; color: var(--tt-muted); line-height: 1.65; overflow-wrap: anywhere; }
+#tavern-playtime-view .tt-version-dialog { max-height: calc(100vh - 32px); overflow-y: auto; font: inherit; }
+#tavern-playtime-view .tt-version-list { margin: 0; font-variant-numeric: tabular-nums; }
+#tavern-playtime-view .tt-version-list > div { display: flex; justify-content: space-between; gap: 16px; margin: 9px 0; }
+#tavern-playtime-view .tt-version-list dt { color: var(--tt-muted); }
+#tavern-playtime-view .tt-version-list dd { margin: 0; overflow-wrap: anywhere; }
+#tavern-playtime-view .tt-version-message { margin: 16px 0; font-size: 12px; line-height: 1.65; }
+#tavern-playtime-view .tt-command-label { display: block; margin-bottom: 8px; font-size: 12px; }
+#tavern-playtime-view .tt-update-command { width: 100%; padding: 9px; border: 1px solid var(--tt-line); border-radius: 6px; background: var(--tt-bg); color: var(--tt-text); font: 12px/1.5 monospace; }
+#tavern-playtime-view .tt-update-instruction { margin: 8px 0 14px; color: var(--tt-muted); font-size: 12px; }
+#tavern-playtime-view .tt-version-links { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; font-size: 12px; }
+#tavern-playtime-view .tt-version-links a { display: inline-flex; align-items: center; min-height: 36px; color: var(--tt-text); text-decoration: none; }
 @media (pointer: coarse) { #tavern-playtime-view .tt-exclude-other { min-height: 44px; } }

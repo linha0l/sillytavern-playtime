@@ -1,4 +1,5 @@
 import { DAY, localDate, reportData } from './data.mjs';
+import { FRONTEND_VERSION, REQUIRED_BACKEND_VERSION, UPDATE_COMMAND, UPDATE_NOTES_URL, UPDATE_REMINDER_RISK, backendUpdateState, readUpdateReminderPreference, saveUpdateReminderPreference } from './updates.mjs';
 
 export function createView({ onExport, onImport, onReset = () => {} }) {
     const dialog = document.createElement('dialog'); dialog.id = 'tavern-playtime-panel';
@@ -39,6 +40,64 @@ export function createView({ onExport, onImport, onReset = () => {} }) {
       const finish = finishImport; finishImport = null; importDialog.close(); finish?.(true);
     };
     importDialog.addEventListener('close', () => { const finish = finishImport; finishImport = null; finish?.(false); });
+    let remindersEnabled = true, backendSeen = false, backendState = backendUpdateState(undefined);
+    try { remindersEnabled = readUpdateReminderPreference(localStorage); } catch { /* Use the default if the browser blocks storage access. */ }
+    const updateDot = document.createElement('span'); updateDot.className = 'tt-update-dot'; updateDot.hidden = true; updateDot.setAttribute('aria-hidden', 'true'); $('[data-action="menu"]').append(updateDot);
+    const versionsButton = document.createElement('button'); versionsButton.type = 'button'; versionsButton.dataset.action = 'versions'; versionsButton.innerHTML = '<span>版本与更新</span><span class="tt-update-label" hidden></span>';
+    const updateControls = document.createElement('div'); updateControls.className = 'tt-update-preferences';
+    updateControls.innerHTML = '<div class="tt-update-pref-row"><button type="button" class="tt-update-toggle" role="switch" aria-label="后端更新提醒"><span>后端更新提醒</span><span class="tt-switch-track" aria-hidden="true"></span></button><button type="button" class="tt-update-help-button" aria-label="后端更新提醒的风险说明" aria-expanded="false" aria-controls="tt-update-risk">?</button></div><div class="tt-update-risk" id="tt-update-risk" role="tooltip" hidden></div>';
+    updateControls.querySelector('.tt-update-risk').textContent = UPDATE_REMINDER_RISK;
+    clearButton.before(versionsButton, updateControls);
+    const versionDialog = document.createElement('dialog'); versionDialog.className = 'tt-reset-dialog tt-version-dialog'; versionDialog.setAttribute('aria-labelledby', 'tt-version-title');
+    versionDialog.innerHTML = '<h3 id="tt-version-title">版本与更新</h3><dl class="tt-version-list"><div><dt>当前前端</dt><dd data-version="frontend"></dd></div><div><dt>运行后端</dt><dd data-version="backend"></dd></div><div><dt>配套后端</dt><dd data-version="required"></dd></div></dl><p class="tt-version-message"></p><label class="tt-command-label" for="tt-update-command">后端更新命令</label><input id="tt-update-command" class="tt-update-command" type="text" readonly spellcheck="false"><p class="tt-update-instruction">在酒馆根目录执行，更新后重启酒馆。</p><div class="tt-version-links"><button type="button" class="tt-quiet" data-action="copy-update-command">复制命令</button><a class="tt-quiet" target="_blank" rel="noopener noreferrer">更新说明</a></div><div class="tt-reset-actions"><button type="button" class="tt-quiet" data-action="version-close" autofocus>关闭</button></div>';
+    versionDialog.querySelector('[data-version="frontend"]').textContent = FRONTEND_VERSION;
+    versionDialog.querySelector('[data-version="required"]').textContent = REQUIRED_BACKEND_VERSION;
+    versionDialog.querySelector('input').value = UPDATE_COMMAND;
+    versionDialog.querySelector('a').href = UPDATE_NOTES_URL;
+    root.append(versionDialog);
+    function placeMenu() {
+      const menu = $('.tt-menu'); if (menu.hidden) return;
+      menu.style.transform = '';
+      const bounds = menu.getBoundingClientRect(), parent = root.getBoundingClientRect();
+      const left = Math.max(parent.left + 8, 8), right = Math.min(parent.right - 8, innerWidth - 8);
+      const x = Math.max(left, Math.min(bounds.left, right - bounds.width));
+      menu.style.transform = `translateX(${x - bounds.left}px)`;
+      menu.style.maxHeight = `${Math.max(44, Math.min(440, parent.bottom - bounds.top - 8, innerHeight - bounds.top - 8))}px`;
+    }
+    function renderUpdateInfo() {
+      const remind = backendSeen && remindersEnabled && backendState.needsUpdate;
+      updateDot.hidden = !remind;
+      const badge = versionsButton.querySelector('.tt-update-label'); badge.hidden = !remind; badge.textContent = backendState.label;
+      $('[data-action="menu"]').setAttribute('aria-label', remind ? `设置，${backendState.label}` : '设置');
+      updateControls.querySelector('[role="switch"]').setAttribute('aria-checked', String(remindersEnabled));
+      versionDialog.querySelector('[data-version="backend"]').textContent = backendSeen ? backendState.version : '尚未连接';
+      versionDialog.querySelector('.tt-version-message').textContent = backendSeen ? backendState.message : '连接后可查看后端运行版本。';
+      placeMenu();
+    }
+    function setBackendVersion(version) { backendSeen = true; backendState = backendUpdateState(version); renderUpdateInfo(); }
+    const helpButton = updateControls.querySelector('.tt-update-help-button'), risk = updateControls.querySelector('.tt-update-risk');
+    let helpPinned = false;
+    function showRisk(show) { risk.hidden = !show; helpButton.setAttribute('aria-expanded', String(show)); placeMenu(); }
+    updateControls.addEventListener('click', event => event.stopPropagation());
+    updateControls.querySelector('[role="switch"]').onclick = () => {
+      remindersEnabled = !remindersEnabled;
+      try { saveUpdateReminderPreference(localStorage, remindersEnabled); } catch { /* Keep the session preference if storage is blocked. */ }
+      renderUpdateInfo();
+    };
+    helpButton.onclick = () => { helpPinned = !helpPinned; showRisk(helpPinned); };
+    helpButton.addEventListener('pointerenter', event => { if (event.pointerType !== 'touch') showRisk(true); });
+    helpButton.addEventListener('pointerleave', () => { if (!helpPinned) showRisk(false); });
+    helpButton.addEventListener('focus', () => showRisk(true));
+    helpButton.addEventListener('blur', () => { if (!helpPinned) showRisk(false); });
+    async function copyUpdateCommand() {
+      const button = versionDialog.querySelector('[data-action="copy-update-command"]'), input = versionDialog.querySelector('input');
+      try { await navigator.clipboard.writeText(UPDATE_COMMAND); button.textContent = '已复制'; }
+      catch {
+        input.focus(); input.select();
+        try { button.textContent = document.execCommand('copy') ? '已复制' : '请手动复制'; } catch { button.textContent = '请手动复制'; }
+      }
+    }
+    renderUpdateInfo();
     const themeKey = 'tavern-playtime-theme';
     function setTheme(value, remember = false) {
       const theme = value === 'light' ? 'light' : 'dark';
@@ -414,9 +473,13 @@ export function createView({ onExport, onImport, onReset = () => {} }) {
       else if (target.dataset.action === 'export') { onExport(); }
       else if (target.dataset.action === 'import') { onImport(); }
       else if (target.dataset.action === 'reset') { onReset(); }
+      else if (target.dataset.action === 'versions') { versionDialog.querySelector('[data-action="copy-update-command"]').textContent = '复制命令'; renderUpdateInfo(); versionDialog.showModal(); }
+      else if (target.dataset.action === 'version-close') { versionDialog.close(); }
+      else if (target.dataset.action === 'copy-update-command') { void copyUpdateCommand(); }
       else if (target.dataset.action === 'close') { hideSelection(); drawChart(); }
       else if (target.dataset.action === 'menu') {
-        $('.tt-menu').hidden = !$('.tt-menu').hidden; target.setAttribute('aria-expanded', String(!$('.tt-menu').hidden)); return;
+        helpPinned = false; showRisk(false);
+        $('.tt-menu').hidden = !$('.tt-menu').hidden; target.setAttribute('aria-expanded', String(!$('.tt-menu').hidden)); placeMenu(); return;
       }
       if (!target.closest('.tt-popover')) { $('.tt-menu').hidden = true; $('[data-action="menu"]').setAttribute('aria-expanded', 'false'); }
     });
@@ -424,11 +487,12 @@ export function createView({ onExport, onImport, onReset = () => {} }) {
       if (event.key === 'Escape') {
         if (!pop.hidden || !$('.tt-menu').hidden) event.preventDefault();
         hideSelection(); drawChart(); $('.tt-menu').hidden = true;
+        $('[data-action="menu"]').setAttribute('aria-expanded', 'false'); helpPinned = false; showRisk(false);
       }
       if (['Enter', ' '].includes(event.key) && event.target.matches('[data-full-name]:not(button)')) { event.preventDefault(); showFullName(event.target); }
     });
     render();
-    const observer = new ResizeObserver(() => { if (chart.clientWidth) { layoutMetrics(); layoutLegend(); drawChart(); } }); observer.observe(chart);
+    const observer = new ResizeObserver(() => { if (chart.clientWidth) { layoutMetrics(); layoutLegend(); drawChart(); } placeMenu(); }); observer.observe(chart);
     dialog.addEventListener('click', event => { if (event.target === dialog) dialog.close(); });
     const setStatus = status => {
       currentStatus = status;
@@ -439,7 +503,7 @@ export function createView({ onExport, onImport, onReset = () => {} }) {
     setStatus(currentStatus);
     return {
       open() { if (!dialog.open) dialog.showModal(); layoutMetrics(); layoutLegend(); drawChart(); },
-      close() { dialog.close(); }, isOpen() { return dialog.open; }, setStatus,
+      close() { dialog.close(); }, isOpen() { return dialog.open; }, setStatus, setBackendVersion,
       confirmReset() {
         resetDialog.querySelector('input').checked = true;
         return new Promise(resolve => { finishReset = resolve; resetDialog.showModal(); });
@@ -447,9 +511,9 @@ export function createView({ onExport, onImport, onReset = () => {} }) {
       confirmImport() { return new Promise(resolve => { finishImport = resolve; importDialog.showModal(); }); },
       update(snapshot) {
         const report = reportData(snapshot); catalog = report.catalog; records = report.records; today = report.today;
-        $('.tt-footer span').textContent = report.timeZone; setStatus(snapshot.server); render();
+        $('.tt-footer span').textContent = report.timeZone; setStatus(snapshot.server); setBackendVersion(snapshot.server?.backendVersion); render();
       },
-      destroy() { if (resetDialog.open) resetDialog.close(); if (importDialog.open) importDialog.close(); observer.disconnect(); dialog.remove(); }
+      destroy() { if (resetDialog.open) resetDialog.close(); if (importDialog.open) importDialog.close(); if (versionDialog.open) versionDialog.close(); observer.disconnect(); dialog.remove(); }
     };
 
 }

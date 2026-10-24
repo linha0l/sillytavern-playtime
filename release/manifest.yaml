@@ -1,7 +1,7 @@
 schema_version: 1
 name: sillytavern-playtime
 display_name: 酒馆时长
-version: 0.1.12
+version: 0.1.13
 date: '2026-10-24'
 repository: https://github.com/linha0l/sillytavern-playtime
 license: UNLICENSED

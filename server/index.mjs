@@ -2,7 +2,9 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { Tracker, emptyData } from './tracker.mjs';
 
-export const info = { id: 'tavern-playtime', name: '酒馆时长', description: '按窗口队列统计角色与聊天时长。' };
+// This is the running module's version, not a package file that git pull may replace.
+export const BACKEND_VERSION = '0.1.13';
+export const info = { id: 'tavern-playtime', name: '酒馆时长', description: '按窗口队列统计角色与聊天时长。', version: BACKEND_VERSION };
 const stores = new Map();
 const loading = new Map();
 let timer;
@@ -67,11 +69,11 @@ export async function init(router) {
   }
   router.post('/heartbeat', handler(async (t, req) => {
     if (req.body.legacyChatRename === true) await reconcileLegacyChatRename(t, req.body.context, req.user?.directories);
-    return t.heartbeat(req.body);
+    return { ...t.heartbeat(req.body), backendVersion: BACKEND_VERSION };
   }, true));
   router.post('/release', handler((t, req) => t.release(req.body.windowId), true));
   router.post('/lifecycle', handler((t, req) => t.lifecycle(req.body), true));
-  router.get('/data', handler((t, req) => t.snapshot(req.query.windowId)));
+  router.get('/data', handler((t, req) => { const data = t.snapshot(req.query.windowId); return { ...data, server: { ...data.server, backendVersion: BACKEND_VERSION } }; }));
   router.get('/export', handler(t => t.export(), true));
   router.post('/import', handler((t, req) => t.import(req.body), true));
   router.post('/reset', handler(async (t, req, s) => {
