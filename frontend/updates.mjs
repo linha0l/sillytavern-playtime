@@ -1,4 +1,4 @@
-export const FRONTEND_VERSION = '0.1.13';
+export const FRONTEND_VERSION = '0.1.14';
 export const REQUIRED_BACKEND_VERSION = '0.1.13';
 export const UPDATE_COMMAND = 'git -C plugins/sillytavern-playtime pull --ff-only';
 export const UPDATE_NOTES_URL = 'https://github.com/linha0l/sillytavern-playtime/blob/main/CHANGELOG.md';

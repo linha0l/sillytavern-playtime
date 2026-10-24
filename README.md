@@ -1,6 +1,6 @@
 # 酒馆时长
 
-SillyTavern 的角色与聊天时长统计扩展，包含前端扩展和服务端插件。当前版本 **0.1.13**。
+SillyTavern 的角色与聊天时长统计扩展，包含前端扩展和服务端插件。当前版本 **0.1.14**。
 
 - 在独立界面查看酒馆总时长、角色卡时长和每份聊天的时长。
 - 日／周／月统计；总览为堆叠柱状图，角色与聊天为平滑曲线。
@@ -70,7 +70,7 @@ node plugins.js install https://github.com/linha0l/sillytavern-playtime.git
 
 每个酒馆账号独立保存到 `<用户目录>/.tavern-playtime/tracking.json`，通常为 `data/<账号>/.tavern-playtime/tracking.json`。每分钟保存，切换聊天、导出等操作也会保存。服务停止期间不补算。
 
-导入会合并数据，相同记录ID不重复累计。清除前默认导出，成功保存备份后才清空；备份在 `.tavern-playtime/backups/`。清除会重置统计起始日期，已有备份保留。
+导入会合并数据，相同记录ID不重复累计。“导入数据”旁的问号可查看说明；需要仅保留导入数据时，请先清除当前数据。清除前默认导出，成功保存备份后才清空；备份在 `.tavern-playtime/backups/`。清除会重置统计起始日期，已有备份保留。
 
 ## 更新
 

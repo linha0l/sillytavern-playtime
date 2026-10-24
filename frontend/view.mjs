@@ -20,6 +20,23 @@ export function createView({ onExport, onImport, onReset = () => {} }) {
     themeOptions.className = 'tt-theme-options'; themeOptions.setAttribute('role', 'group'); themeOptions.setAttribute('aria-label', '外观');
     themeOptions.innerHTML = '<button type="button" data-theme="light" aria-pressed="false">浅色</button><button type="button" data-theme="dark" aria-pressed="false">深色</button>';
     $('.tt-menu').prepend(themeOptions);
+    const importButton = $('[data-action="import"]');
+    const importControls = document.createElement('div'); importControls.className = 'tt-import-controls';
+    const importRow = document.createElement('div'); importRow.className = 'tt-import-row';
+    importButton.before(importControls); importControls.append(importRow); importRow.append(importButton);
+    const importHelpButton = document.createElement('button'); importHelpButton.type = 'button'; importHelpButton.className = 'tt-import-help-button'; importHelpButton.textContent = '?';
+    importHelpButton.setAttribute('aria-label', '导入数据说明'); importHelpButton.setAttribute('aria-expanded', 'false'); importHelpButton.setAttribute('aria-controls', 'tt-import-help');
+    const importHelp = document.createElement('div'); importHelp.id = 'tt-import-help'; importHelp.className = 'tt-import-help'; importHelp.setAttribute('role', 'tooltip'); importHelp.hidden = true;
+    importHelp.textContent = '导入数据会与当前数据执行去重合并。如果需要仅保留导入数据，请先清除当前数据。';
+    importRow.append(importHelpButton); importControls.append(importHelp);
+    let importHelpPinned = false;
+    function showImportHelp(show) { importHelp.hidden = !show; importHelpButton.setAttribute('aria-expanded', String(show)); placeMenu(); }
+    importHelpButton.onclick = event => { event.stopPropagation(); importHelpPinned = !importHelpPinned; showImportHelp(importHelpPinned); };
+    importHelp.addEventListener('click', event => event.stopPropagation());
+    importHelpButton.addEventListener('pointerenter', event => { if (event.pointerType !== 'touch') showImportHelp(true); });
+    importHelpButton.addEventListener('pointerleave', () => { if (!importHelpPinned) showImportHelp(false); });
+    importHelpButton.addEventListener('focus', () => showImportHelp(true));
+    importHelpButton.addEventListener('blur', () => { if (!importHelpPinned) showImportHelp(false); });
     const clearButton = document.createElement('button'); clearButton.type = 'button'; clearButton.dataset.action = 'reset'; clearButton.className = 'tt-clear-action'; clearButton.textContent = '清除全部时长数据'; $('.tt-menu').append(clearButton);
     const resetDialog = document.createElement('dialog'); resetDialog.className = 'tt-reset-dialog'; resetDialog.setAttribute('aria-labelledby', 'tt-reset-title');
     resetDialog.innerHTML = '<h3 id="tt-reset-title">清除全部时长数据？</h3><label class="tt-reset-export"><input type="checkbox" checked><span>清除前导出时长数据</span></label><div class="tt-reset-actions"><button type="button" class="tt-quiet" data-reset="cancel" autofocus>取消</button><button type="button" class="tt-quiet tt-clear-action" data-reset="confirm">清除</button></div>';
@@ -478,6 +495,7 @@ export function createView({ onExport, onImport, onReset = () => {} }) {
       else if (target.dataset.action === 'copy-update-command') { void copyUpdateCommand(); }
       else if (target.dataset.action === 'close') { hideSelection(); drawChart(); }
       else if (target.dataset.action === 'menu') {
+        importHelpPinned = false; showImportHelp(false);
         helpPinned = false; showRisk(false);
         $('.tt-menu').hidden = !$('.tt-menu').hidden; target.setAttribute('aria-expanded', String(!$('.tt-menu').hidden)); placeMenu(); return;
       }
@@ -488,6 +506,7 @@ export function createView({ onExport, onImport, onReset = () => {} }) {
         if (!pop.hidden || !$('.tt-menu').hidden) event.preventDefault();
         hideSelection(); drawChart(); $('.tt-menu').hidden = true;
         $('[data-action="menu"]').setAttribute('aria-expanded', 'false'); helpPinned = false; showRisk(false);
+        importHelpPinned = false; showImportHelp(false);
       }
       if (['Enter', ' '].includes(event.key) && event.target.matches('[data-full-name]:not(button)')) { event.preventDefault(); showFullName(event.target); }
     });
